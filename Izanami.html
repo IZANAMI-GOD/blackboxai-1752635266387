@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>IZANAMI - Tempat Nonton & Download Anime</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles */
+        dialog::backdrop {
+            backdrop-filter: blur(3px);
+        }
+        .player-container {
+            aspect-ratio: 16/9;
+        }
+        .anime-card:hover .anime-title {
+            color: #f97316;
+        }
+        .upload-container {
+            max-width: 800px;
+        }
+        .category-pill {
+            transition: all 0.3s ease;
+        }
+        .category-pill:hover {
+            background-color: #f97316;
+            color: white;
+        }
+        
+        /* Video player theming */
+        .plyr {
+            --plyr-color-main: #f97316;
+            --plyr-video-background: #111827;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Navbar Section -->
+    <nav class="bg-gray-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <button class="rounded-full w-8 h-8 overflow-hidden focus:outline-none">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/20e1e7c3-e9e9-4520-baaa-0fffde0604c0.png" alt="IZANAMI logo" class="w-full h-full object-cover">
+                </button>
+                <h1 class="text-xl font-bold hidden sm:block">IZANAMI</h1>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#home" class="hover:text-orange-500 transition">Home</a>
+                <a href="#anime-list" class="hover:text-orange-500 transition">Anime List</a>
+                <a href="#upload" class="hover:text-orange-500 transition">Upload</a>
+                <a href="#trending" class="hover:text-orange-500 transition">Trending</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="mobile-menu-button" class="rounded-full w-8 h-8 overflow-hidden focus:outline-none md:hidden">
+                    <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition transform hover:scale-105 active:scale-95 transition-all duration-200" onclick="document.getElementById('login-modal').showModal()">
+                    Login
+                </button>
+
+                <!-- Login Modal -->
+                <dialog id="register-modal" class="backdrop:bg-black/70 rounded-lg shadow-2xl border-0 w-full max-w-md">
+                    <div class="p-8 bg-gray-900 text-white">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold">Join IZANAMI</h3>
+                            <button onclick="document.getElementById('register-modal').close()" class="text-gray-400 hover:text-white">
+                                ✕
+                            </button>
+                        </div>
+                        <form class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="block">Username</label>
+                                <input type="text" class="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block">Email</label>
+                                <input type="email" class="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block">Password</label>
+                                <input type="password" class="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block">Confirm Password</label>
+                                <input type="password" class="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <button class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition mt-4 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+                                Sign Up
+                            </button>
+                        </form>
+                    </div>
+                </dialog>
+                <dialog id="login-modal" class="backdrop:bg-black/70 rounded-lg shadow-2xl border-0 w-full max-w-md">
+                    <div class="p-8 bg-gray-900 text-white">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold">Login to IZANAMI</h3>
+                            <button onclick="document.getElementById('login-modal').close()" class="text-gray-400 hover:text-white">
+                                ✕
+                            </button>
+                        </div>
+                        <form class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="block">Username</label>
+                                <input type="text" class="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block">Password</label>
+                                <input type="password" class="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <button class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition mt-4">
+                                Sign In
+                            </button>
+                            <div class="text-center text-sm mt-4">
+                                <p>Don't have account? <a href="#" class="text-orange-500 hover:underline" onclick="document.getElementById('register-modal').showModal()">Register</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </dialog>
+                <button class="md:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative bg-gray-800 text-white">
+        <div class="container mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">
+                    Nonton Anime <span class="text-orange-500">Gratis</span> Tanpa Iklan
+                </h1>
+                <p class="text-lg mb-8">
+                    Streaming dan download ribuan anime berkualitas tinggi dengan subtitle Indonesia. Update setiap hari!
+                </p>
+                <div class="flex space-x-4">
+                    <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+                        Mulai Menonton
+                    </button>
+                    <button class="border border-white hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+                        Trending
+                    </button>
+                </div>
+                </div>
+                <!-- Add 2 more rows -->
+                <div class="flex overflow-x-auto pb-4 space-x-4">
+                    <div class="flex space-x-4 flex-nowrap">
+                        <!-- 3 more anime cards here -->
+                    </div>
+                </div>
+                <div class="flex overflow-x-auto pb-4 space-x-4">
+                    <div class="flex space-x-4 flex-nowrap">
+                        <!-- 3 more anime cards here -->
+                    </div>
+                </div>
+                <!-- Add more rows -->
+                <div class="grid grid-cols-3 gap-4">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a748043f-7559-4e84-ae15-62989f38510b.png" alt="Featured anime characters in action pose with vibrant colors and dynamic background" class="rounded-lg shadow-2xl">
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-2 sm:px-4 py-6 md:py-12">
+        <!-- Categories Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-orange-500 inline-block">Kategori Anime</h2>
+            <div class="flex flex-wrap gap-2 mt-4">
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">All</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Action</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Adventure</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Comedy</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Drama</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Fantasy</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Romance</button>
+                <button class="category-pill bg-gray-200 px-4 py-2 rounded-full font-medium">Sci-Fi</button>
+            </div>
+        </section>
+
+        <!-- Anime List Section -->
+        <section id="anime-list" class="mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold pb-2 border-b-2 border-orange-500 inline-block">Anime Terbaru</h2>
+                <a href="#" class="text-orange-500 hover:underline">Lihat Semua</a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4" id="anime-grid-container">
+                <div class="grid grid-cols-3 gap-3 sm:gap-4">
+                <!-- Anime Card 1 -->
+                <div class="anime-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer w-full h-full">
+                    <div class="relative pb-[140%]">
+                        <img src="https://placehold.co/300x420" alt="Anime poster for Attack on Titan featuring Eren Yeager in titan form with dramatic sky background" class="absolute h-full w-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <span class="text-white text-xs bg-orange-500 px-2 py-1 rounded">EP 12</span>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="anime-title font-semibold text-sm md:text-base line-clamp-2 transition">Attack on Titan Final Season Part 3</h3>
+                        <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                            <span>Sub Indo</span>
+                            <span>HD</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Anime Card 2 -->
+                <div class="anime-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer">
+                    <div class="relative pb-[140%]">
+                        <img src="https://placehold.co/300x420" alt="Anime poster for Jujutsu Kaisen featuring Yuji Itadori with cursed energy aura" class="absolute h-full w-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <span class="text-white text-xs bg-orange-500 px-2 py-1 rounded">EP 24</span>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="anime-title font-semibold text-sm md:text-base line-clamp-2 transition">Jujutsu Kaisen Season 2</h3>
+                        <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                            <span>Sub Indo</span>
+                            <span>HD</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- More anime cards... -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Anime List Modal -->
+    <section id="anime-list-modal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden overflow-y-auto">
+        <div class="container mx-auto px-4 py-12">
+            <div class="bg-gray-900 rounded-lg overflow-hidden shadow-xl relative">
+                <button id="close-anime-list" class="absolute top-4 right-4 text-white hover:text-orange-500 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-white mb-6 pb-2 border-b-2 border-orange-500 inline-block">Daftar Anime</h2>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <!-- Anime List Content will be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Player Section -->
+        <section id="player" class="mb-16 hidden">
+            <div class="bg-gray-900 rounded-lg overflow-hidden shadow-xl">
+                <div class="player-container w-full max-w-5xl mx-auto">
+                    <video id="main-player" controls class="w-full h-auto max-w-full max-h-[80vh]">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="p-6 text-white">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-2xl font-bold" id="video-title">Video Title</h2>
+                            <div class="flex items-center mt-2 space-x-4 text-sm text-gray-300">
+                                <span id="video-views">1.2M views</span>
+                                <span id="video-rating">9.8/10</span>
+                                <span id="video-date">2023-10-05</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="download-btn" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded transition flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Download
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                </svg>
+                                Bookmark
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-700">
+                        <h3 class="font-semibold mb-2">Episode List</h3>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+                            <!-- Episode list will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload" class="mb-16">
+            <div class="bg-white rounded-lg shadow-md p-6 upload-container mx-auto">
+                <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-orange-500 inline-block">Upload Anime</h2>
+                
+                <form id="upload-form">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2" for="anime-title">Judul Anime</label>
+                        <input type="text" id="anime-title" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2" for="anime-category">Kategori</label>
+                        <select id="anime-category" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <option value="">Pilih Kategori</option>
+                            <option value="action">Action</option>
+                            <option value="adventure">Adventure</option>
+                            <option value="comedy">Comedy</option>
+                            <option value="drama">Drama</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="romance">Romance</option>
+                            <option value="sci-fi">Sci-Fi</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Thumbnail</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-gray-400 transition" id="thumbnail-container">
+                            <div id="thumbnail-upload-area">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <p class="mt-1 text-sm text-gray-600">Klik untuk upload thumbnail</p>
+                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+                            </div>
+                            <img id="thumbnail-preview" src="#" alt="thumbnail preview" class="hidden max-h-60 mx-auto">
+                        </div>
+                        <input type="file" id="thumbnail-input" accept="image/*" class="hidden">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Video File</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-gray-400 transition" id="video-container">
+                            <div id="video-upload-area">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <p class="mt-1 text-sm text-gray-600">Klik untuk upload video</p>
+                                <p class="text-xs text-gray-500">MP4, MKV up to 500MB</p>
+                            </div>
+                            <div id="video-info" class="hidden mt-2">
+                                <p class="text-sm font-medium" id="video-file-name"></p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                    <div id="upload-progress" class="bg-orange-500 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="upload-status">Mengunggah...</p>
+                            </div>
+                        </div>
+                        <input type="file" id="video-input" accept="video/*" class="hidden">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Episode (opsional)</label>
+                        <input type="number" id="anime-episode" min="1" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Deskripsi</label>
+                        <textarea id="anime-description" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+                        Upload Anime
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 md:py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">IZANAMI</h3>
+                    <p class="text-gray-300">
+                        Platform streaming anime gratis dengan kualitas tinggi dan update cepat.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Navigasi</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Home</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Anime List</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Genre</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Beranda</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Tautan</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Tentang Kami</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Ketentuan</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Privasi</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-orange-500 transition">Hubungi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Ikuti Kami</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-orange-500 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-orange-500 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-orange-500 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-orange-500 transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>© 2023 IZANAMI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Database untuk simulasi (menggunakan localStorage)
+        const DB_NAME = 'izanami_db';
+        
+        // Inisialisasi database jika belum ada
+        function populateAnimeCards() {
+            const animeGrid = document.getElementById('anime-grid');
+            getAllVideos().forEach(video => {
+                const animeCard = document.createElement('div');
+                animeCard.className = 'anime-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer';
+                animeCard.innerHTML = `
+                    <div class="relative pb-[140%]">
+                        <img src="${video.thumbnail}" alt="${video.title} anime cover" class="absolute h-full w-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <span class="text-white text-xs bg-orange-500 px-2 py-1 rounded">EP ${video.episode}</span>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="anime-title font-semibold text-sm md:text-base line-clamp-2 transition">${video.title}</h3>
+                        <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                            <span>Sub Indo</span>
+                            <span>HD</span>
+                        </div>
+                    </div>
+                `;
+                animeCard.addEventListener('click', () => playVideo(video.id));
+                animeGrid.appendChild(animeCard);
+            });
+        }
+
+        function initDatabase() {
+            if (!localStorage.getItem(DB_NAME)) {
+                const initialData = {
+                    videos: [
+                        {
+                            id: 1,
+                            title: "Attack on Titan Final Season Part 3",
+                            category: "action",
+                            thumbnail: "https://placehold.co/300x420",
+                            videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+                            description: "Final season of the popular anime series Attack on Titan.",
+                            episode: 12,
+                            views: 1250000,
+                            rating: 9.8,
+                            uploadDate: "2023-10-05"
+                        },
+                        {
+                            id: 2,
+                            title: "Jujutsu Kaisen Season 2",
+                            category: "action",
+                            thumbnail: "https://placehold.co/300x420",
+                            videoUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4",
+                            description: "Second season of the hit anime series Jujutsu Kaisen.",
+                            episode: 24,
+                            views: 980000,
+                            rating: 9.6,
+                            uploadDate: "2023-07-15"
+                        }
+                    ]
+                };
+                localStorage.setItem(DB_NAME, JSON.stringify(initialData));
+            }
+        }
+        
+        // Fungsi untuk mendapatkan semua video
+        function getAllVideos() {
+            const db = JSON.parse(localStorage.getItem(DB_NAME));
+            return db.videos || [];
+        }
+        
+        // Fungsi untuk menambahkan video baru
+        function addVideo(video) {
+            const db = JSON.parse(localStorage.getItem(DB_NAME));
+            const newVideo = {
+                id: db.videos.length + 1,
+                ...video,
+                views: 0,
+                rating: 0,
+                uploadDate: new Date().toISOString().split('T')[0]
+            };
+            db.videos.push(newVideo);
+            localStorage.setItem(DB_NAME, JSON.stringify(db));
+            return newVideo;
+        }
+        
+        // Fungsi untuk memainkan video
+        function playVideo(videoId) {
+            const video = getAllVideos().find(v => v.id === videoId);
+            if (video) {
+                document.getElementById('main-player').src = video.videoUrl;
+                document.getElementById('video-title').textContent = video.title;
+                document.getElementById('video-views').textContent = `${video.views.toLocaleString()} views`;
+                document.getElementById('video-rating').textContent = `${video.rating}/10`;
+                document.getElementById('video-date').textContent = video.uploadDate;
+                
+                // Tampilkan player section dan scroll ke sana
+                document.getElementById('player').classList.remove('hidden');
+                document.getElementById('player').scrollIntoView({ behavior: 'smooth' });
+                
+                // Update episode list
+                const episodeContainer = document.querySelector('#player .grid');
+                episodeContainer.innerHTML = '';
+                
+                const episodes = getAllVideos().filter(v => v.title === video.title);
+                episodes.forEach(ep => {
+                    const episodeBtn = document.createElement('button');
+                    episodeBtn.className = `bg-gray-700 hover:bg-orange-500 text-white text-sm px-2 py-1 rounded transition ${ep.id === videoId ? 'bg-orange-500' : ''}`;
+                    episodeBtn.textContent = `EP ${ep.episode}`;
+                    episodeBtn.onclick = () => playVideo(ep.id);
+                    episodeContainer.appendChild(episodeBtn);
+                });
+                
+                // Set up download button
+                document.getElementById('download-btn').onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = video.videoUrl;
+                    a.download = `${video.title} - EP${video.episode}.mp4`;
+                    a.click();
+                };
+                
+                // Mainkan video
+                document.getElementById('main-player').play();
+            }
+        }
+        
+        // Function to load anime list
+        function loadAnimeList() {
+            const modalContent = document.querySelector('#anime-list-modal .grid');
+            modalContent.innerHTML = '';
+            
+            getAllVideos().forEach(video => {
+                const animeCard = document.createElement('div');
+                animeCard.className = 'anime-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer';
+                animeCard.innerHTML = `
+                    <div class="relative pb-[140%]">
+                        <img src="${video.thumbnail}" alt="${video.title}" class="absolute h-full w-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <span class="text-white text-xs bg-orange-500 px-2 py-1 rounded">EP ${video.episode}</span>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="anime-title font-semibold text-sm md:text-base line-clamp-2 transition">${video.title}</h3>
+                        <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                            <span>Sub Indo</span>
+                            <span>HD</span>
+                        </div>
+                    </div>
+                `;
+                animeCard.addEventListener('click', () => {
+                    playVideo(video.id);
+                    document.getElementById('anime-list-modal').classList.add('hidden');
+                });
+                modalContent.appendChild(animeCard);
+            });
+        }
+
+        // Inisialisasi ketika halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const navLinks = document.querySelector('nav .hidden.md\\:flex');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                navLinks.classList.toggle('hidden');
+                navLinks.classList.toggle('flex');
+                navLinks.classList.toggle('flex-col');
+                navLinks.classList.toggle('absolute');
+                navLinks.classList.toggle('top-16');
+                navLinks.classList.toggle('left-0');
+                navLinks.classList.toggle('right-0');
+                navLinks.classList.toggle('bg-gray-900');
+                navLinks.classList.toggle('p-4');
+                navLinks.classList.toggle('space-y-4');
+                navLinks.classList.toggle('space-x-6');
+            });
+            // Anime slider scrolling with touch/swipe support
+            const rows = document.querySelectorAll('#anime-grid-container > div');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            sliders.forEach(slider => {
+                slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+            });
+
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+            });
+
+            slider.addEventListener('mousemove', (e) => {
+                if(!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2;
+                slider.scrollLeft = scrollLeft - walk;
+            });
+
+            // Touch support for mobile
+            slider.addEventListener('touchstart', (e) => {
+                isDown = true;
+                startX = e.touches[0].pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+
+            slider.addEventListener('touchend', () => {
+                isDown = false;
+            });
+
+            slider.addEventListener('touchmove', (e) => {
+                if(!isDown) return;
+                e.preventDefault();
+                const x = e.touches[0].pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2;
+                slider.scrollLeft = scrollLeft - walk;
+            });
+            initDatabase();
+            populateAnimeCards();
+            
+            // Setup anime list modal
+            document.querySelector('#anime-list').addEventListener('click', (e) => {
+                e.preventDefault();
+                loadAnimeList();
+                document.getElementById('anime-list-modal').classList.remove('hidden');
+            });
+            
+            document.getElementById('close-anime-list').addEventListener('click', () => {
+                document.getElementById('anime-list-modal').classList.add('hidden');
+            });
+            
+            // Event handler untuk upload thumbnail
+            document.getElementById('thumbnail-container').addEventListener('click', () => {
+                document.getElementById('thumbnail-input').click();
+            });
+            
+            document.getElementById('thumbnail-input').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        document.getElementById('thumbnail-preview').src = event.target.result;
+                        document.getElementById('thumbnail-preview').classList.remove('hidden');
+                        document.getElementById('thumbnail-upload-area').classList.add('hidden');
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Event handler untuk upload video
+            document.getElementById('video-container').addEventListener('click', () => {
+                document.getElementById('video-input').click();
+            });
+            
+            // Form submission untuk upload
+            document.getElementById('upload-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('anime-title').value;
+                const category = document.getElementById('anime-category').value;
+                const episode = parseInt(document.getElementById('anime-episode').value) || 1;
+                const description = document.getElementById('anime-description').value;
+                
+                // Simulasi upload video (dalam real implementation, ini akan diupload ke server)
+                const videoFile = document.getElementById('video-input').files[0];
+                const thumbnailFile = document.getElementById('thumbnail-input').files[0];
+                
+                if (!videoFile) {
+                    alert('Silakan pilih file video');
+                    return;
+                }
+                
+                // Tampilkan progress bar (simulasi)
+                const progressBar = document.getElementById('upload-progress');
+                const progressInfo = document.getElementById('upload-status');
+                document.getElementById('video-file-name').textContent = videoFile.name;
+                document.getElementById('video-info').classList.remove('hidden');
+                document.getElementById('video-upload-area').classList.add('hidden');
+                
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 10;
+                    if (progress > 100) progress = 100;
+                    progressBar.style.width = `${progress}%`;
+                    
+                    if (progress === 100) {
+                        clearInterval(progressInterval);
+                        progressInfo.textContent = 'Upload selesai!';
+                        
+                        // Simpan video ke database (dalam real implementation, ini akan menyimpan ke server)
+                        setTimeout(() => {
+                            const videoObj = {
+                                title,
+                                category,
+                                thumbnail: thumbnailFile ? URL.createObjectURL(thumbnailFile) : 'https://placehold.co/300x420',
+                                videoUrl: URL.createObjectURL(videoFile),
+                                description,
+                                episode
+                            };
+                            
+                            const newVideo = addVideo(videoObj);
+                            alert('Video berhasil diupload!');
+                            document.getElementById('upload-form').reset();
+                            document.getElementById('thumbnail-preview').classList.add('hidden');
+                            document.getElementById('thumbnail-upload-area').classList.remove('hidden');
+                            document.getElementById('video-info').classList.add('hidden');
+                            document.getElementById('video-upload-area').classList.remove('hidden');
+                            progressBar.style.width = '0%';
+                            
+                            // Mainkan video yang baru diupload
+                            playVideo(newVideo.id);
+                        }, 500);
+                    }
+                }, 200);
+            });
+            
+            // Event handler untuk anime cards
+            document.querySelectorAll('.anime-card').forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    playVideo(index + 1); // ID sesuai dengan urutan di database
+                });
+            });
+            
+            // Event handler untuk kategori
+            document.querySelectorAll('.category-pill').forEach(pill => {
+                pill.addEventListener('click', function() {
+                    document.querySelectorAll('.category-pill').forEach(p => {
+                        p.classList.remove('bg-orange-500', 'text-white');
+                        p.classList.add('bg-gray-200');
+                    });
+                    
+                    this.classList.remove('bg-gray-200');
+                    this.classList.add('bg-orange-500', 'text-white');
+                    
+                    // Filter anime berdasarkan kategori
+                    const category = this.textContent.toLowerCase();
+                    // Implementasi filter akan ditambahkan di sini
+                });
+            });
+        });
+    </script>
+</body>
+</html>
